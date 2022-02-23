@@ -54,6 +54,6 @@ func GetBlockchain() *blockchain {
 	return b
 }
 
-func (b *blockchain) AllBlock() []*Block {
+func (b *blockchain) AllBlocks() []*Block {
 	return b.blocks
 }
