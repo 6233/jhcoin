@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/6233/jhcoin/blockchain"
 	"github.com/6233/jhcoin/utils"
 )
@@ -75,13 +77,20 @@ func blocks(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Start(aPort int) {
-	handler := http.NewServeMux()
-	port := fmt.Sprintf(":%d", aPort)
-	handler.HandleFunc("/", documentation)
+func block(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	fmt.Print(id)
+}
 
-	handler.HandleFunc("/blocks", blocks)
+func Start(aPort int) {
+	router := mux.NewRouter()
+
+	port := fmt.Sprintf(":%d", aPort)
+	router.HandleFunc("/", documentation)
+
+	router.HandleFunc("/blocks", blocks)
 	fmt.Printf("Listening on http://localhost%s\n", port)
 
-	log.Fatal(http.ListenAndServe(port, handler))
+	log.Fatal(http.ListenAndServe(port, router))
 }
