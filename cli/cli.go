@@ -4,17 +4,18 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime"
 
-	"github.com/6233/jhcoin/rest"
 	"github.com/6233/jhcoin/explorer"
+	"github.com/6233/jhcoin/rest"
 )
 
 func usage() {
-	fmt.Printf("Welcome to 노마드 코인\n\n")
+	fmt.Printf("Welcome to jhcoin\n\n")
 	fmt.Printf("Please use the following flags:\n\n")
 	fmt.Printf("-port:		Set the PORT of the server\n")
 	fmt.Printf("-mode:		Choose between 'html' and 'rest'\n\n")
-	os.Exit(0)
+	runtime.Goexit()
 }
 
 func Start() {
