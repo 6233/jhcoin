@@ -1,9 +1,10 @@
 package db
 
 import (
-	"github.com/boltdb/bolt"
 	"github.com/6233/jhcoin/utils"
+	"github.com/boltdb/bolt"
 )
+
 const (
 	dbName       = "blockchain.db"
 	dataBucket   = "data"
@@ -11,7 +12,9 @@ const (
 
 	checkpoint = "checkpoint"
 )
+
 var db *bolt.DB
+
 func DB() *bolt.DB {
 	if db == nil {
 		dbPointer, err := bolt.Open(dbName, 0600, nil)
@@ -41,7 +44,7 @@ func SaveBlock(hash string, data []byte) {
 	utils.HandleErr(err)
 }
 
-func SaveBlockchain(data []byte) {
+func SaveCheckpoint(data []byte) {
 	err := DB().Update(func(t *bolt.Tx) error {
 		bucket := t.Bucket([]byte(dataBucket))
 		err := bucket.Put([]byte(checkpoint), data)
