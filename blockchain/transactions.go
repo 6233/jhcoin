@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/6233/jhcoin/utils"
+	"github.com/6233/jhcoin/wallet"
 )
 
 const (
@@ -100,7 +101,7 @@ func makeTx(from, to string, amount int) (*Tx, error) {
 }
 
 func (m *mempool) AddTx(to string, amount int) error {
-	tx, err := makeTx("nico", to, amount)
+	tx, err := makeTx(wallet.Wallet().Address, to, amount)
 	if err != nil {
 		return err
 	}
