@@ -10,6 +10,7 @@ import (
 
 	"github.com/6233/jhcoin/blockchain"
 	"github.com/6233/jhcoin/utils"
+	"github.com/6233/jhcoin/wallet"
 )
 
 const port string = ":4000"
@@ -31,6 +32,10 @@ type URLDescription struct {
 type balanceResponse struct {
 	Address string `json:"address"`
 	Balance int    `json:"balance"`
+}
+
+type myWalletResponse struct {
+	Address string `json:"address"`
 }
 
 type errorResponse struct {
@@ -141,6 +146,11 @@ func transactions(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(http.StatusCreated)
 }
 
+func myWallet(rw http.ResponseWriter, r *http.Request) {
+	address := wallet.Wallet().Address
+	json.NewEncoder(rw).Encode(myWalletResponse{Address: address})
+}
+
 func Start(aPort int) {
 	port := fmt.Sprintf(":%d", aPort)
 
@@ -159,6 +169,10 @@ func Start(aPort int) {
 	router.HandleFunc("/balance/{address}", balance)
 
 	router.HandleFunc("/mempool", mempool)
+
+	router.HandleFunc("/balance/{address}", balance).Methods("GET")
+	router.HandleFunc("/mempool", mempool).Methods("GET")
+	router.HandleFunc("/wallet", myWallet).Methods("GET")
 
 	router.HandleFunc("/transactions", transactions).Methods("POST")
 
