@@ -8,6 +8,8 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/6233/jhcoin/p2p"
+
 	"github.com/6233/jhcoin/blockchain"
 	"github.com/6233/jhcoin/utils"
 	"github.com/6233/jhcoin/wallet"
@@ -80,6 +82,12 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 			Method:      "GET",
 			Description: "Get TxOuts for an Address",
 		},
+		{
+			URL:         URL("/ws"),
+			Method:      "GET",
+			Description: "Upgrade to WebSockets",
+		},
+
 	}
 	utils.HandleErr(json.NewEncoder(rw).Encode(data))
 }
@@ -115,6 +123,13 @@ func status(rw http.ResponseWriter, r *http.Request) {
 func jsonContentTypeMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(rw, r)
+	})
+}
+
+func loggerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.URL)
 		next.ServeHTTP(rw, r)
 	})
 }
@@ -157,7 +172,7 @@ func Start(aPort int) {
 
 	router := mux.NewRouter()
 
-	router.Use(jsonContentTypeMiddleware)
+	router.Use(jsonContentTypeMiddleware, loggerMiddleware)
 
 	router.HandleFunc("/", documentation).Methods("GET")
 
@@ -176,6 +191,8 @@ func Start(aPort int) {
 	router.HandleFunc("/wallet", myWallet).Methods("GET")
 
 	router.HandleFunc("/transactions", transactions).Methods("POST")
+
+	router.HandleFunc("/ws", p2p.Upgrade).Methods("GET")
 
 	fmt.Printf("Listening on http://localhost%s\n", port)
 
