@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/6233/jhcoin/utils"
-	"github.com/boltdb/bolt"
+	bolt "go.etcd.io/bbolt"
 )
 
 const (
